@@ -27,6 +27,16 @@ import static java.util.stream.Collectors.toMap;
 public class KTStreams {
 
     /**
+     * Checks if all payments in the list are approved.
+     *
+     * @return True if all payments are approved, false otherwise.
+     */
+    public static boolean allPaymentsApproved(List<Payment> payments) {
+        return payments.stream()
+                .allMatch(payment -> payment.status().equals(Payment.PaymentStatus.APPROVED));
+    }
+
+    /**
      * Filters payments which were approved.
      *
      * @return A list of payments with the approved status.
@@ -62,16 +72,6 @@ public class KTStreams {
     }
 
     /**
-     * Counts the number of payments for each payment method.
-     *
-     * @return A map with payment methods as keys and their respective counts as values.
-     */
-    public static Map<String, Long> countByPaymentMethod(List<Payment> payments) {
-        return payments.stream()
-                .collect(groupingBy(Payment::paymentMethod, counting()));
-    }
-
-    /**
      * Finds the earliest payment date in the list.
      *
      * @return The earliest payment date. Otherwise - return null
@@ -81,28 +81,6 @@ public class KTStreams {
                 .map(Payment::date)
                 .min(LocalDate::compareTo)
                 .orElse(null);
-    }
-
-    /**
-     * Groups customer names by payment statuses
-     *
-     * @return a map where a key is a payment status and value is comma-separated customer names
-     */
-    public static Map<Payment.PaymentStatus, String> groupByCustomer(List<Payment> payments) {
-        return payments.stream()
-                .collect(groupingBy(Payment::status,
-                        mapping(Payment::customerName,
-                                joining(", "))));
-    }
-
-    /**
-     * Checks if all payments in the list are approved.
-     *
-     * @return True if all payments are approved, false otherwise.
-     */
-    public static boolean allPaymentsApproved(List<Payment> payments) {
-        return payments.stream()
-                .allMatch(payment -> payment.status().equals(Payment.PaymentStatus.APPROVED));
     }
 
     /**
@@ -128,6 +106,17 @@ public class KTStreams {
                 .filter(payment -> payment.customerName().equals(customerName))
                 .map(Payment::reference)
                 .toList();
+    }
+
+    /**
+     * Counts the number of payments for each payment method.
+     *
+     * @return A map with payment methods as keys and their respective counts as values.
+     */
+    public static Map<String, Long> countByPaymentMethod(List<Payment> payments) {
+        return payments.stream()
+                .collect(groupingBy(Payment::paymentMethod,
+                        counting()));
     }
 
     /**
@@ -164,6 +153,29 @@ public class KTStreams {
     }
 
     /**
+     * Groups the payments by date and maps them to a list of references.
+     *
+     * @return a map where the key is the date and the value is a list of references of payments made on that date
+     */
+    public static Map<LocalDate, List<String>> groupByDateAndMapToReferences(List<Payment> payments) {
+        return payments.stream()
+                .collect(groupingBy(Payment::date,
+                        mapping(Payment::reference, toList())));
+    }
+
+    /**
+     * Groups customer names by payment statuses
+     *
+     * @return a map where a key is a payment status and value is comma-separated customer names
+     */
+    public static Map<Payment.PaymentStatus, String> groupByCustomer(List<Payment> payments) {
+        return payments.stream()
+                .collect(groupingBy(Payment::status,
+                        mapping(Payment::customerName,
+                                joining(", "))));
+    }
+
+    /**
      * Groups the payments by customer name and maps them to the total payment amount per customer.
      *
      * @return a map where the key is the customer name and the value is the total amount they paid
@@ -176,37 +188,6 @@ public class KTStreams {
     }
 
     /**
-     * Groups the payments by date and maps them to a list of references.
-     *
-     * @return a map where the key is the date and the value is a list of references of payments made on that date
-     */
-    public static Map<LocalDate, List<String>> groupByDateAndMapToReferences(List<Payment> payments) {
-        return payments.stream()
-                .collect(groupingBy(Payment::date,
-                        mapping(Payment::reference, toList())));
-    }
-
-    /**
-     * Counts the number of employees in each department.
-     *
-     * @return a map where the key is the department name and the value is the number of employees in that department
-     */
-    public static Map<String, Long> countEmployeesInDepartments(List<Employee> employees) {
-        return employees.stream()
-                .collect(groupingBy(Employee::department, counting()));
-    }
-
-    /**
-     * Finds the average salary of employees grouped by gender.
-     *
-     * @return a map where the key is the gender and the value is the average salary of that gender
-     */
-    public static Map<String, Double> averageSalaryByGender(List<Employee> employees) {
-        return employees.stream()
-                .collect(groupingBy(Employee::gender, averagingDouble(Employee::salary)));
-    }
-
-    /**
      * Gets the details of the highest paid employee in the organization.
      *
      * @return the employee with the highest salary
@@ -215,16 +196,6 @@ public class KTStreams {
         return employees.stream()
                 .max(Comparator.comparing(Employee::salary))
                 .orElseThrow();
-    }
-
-    /**
-     * Calculates the average age of employees in each department.
-     *
-     * @return a map where the key is the department name and the value is the average age in that department
-     */
-    public static Map<String, Double> averageAgeInDepartments(List<Employee> employees) {
-        return employees.stream()
-                .collect(groupingBy(Employee::department, averagingDouble(Employee::age)));
     }
 
     /**
@@ -241,13 +212,47 @@ public class KTStreams {
     }
 
     /**
+     * Counts the number of employees in each department.
+     *
+     * @return a map where the key is the department name and the value is the number of employees in that department
+     */
+    public static Map<String, Long> countEmployeesInDepartments(List<Employee> employees) {
+        return employees.stream()
+                .collect(groupingBy(Employee::department,
+                        counting()));
+    }
+
+    /**
      * Counts the number of male and female employees in the organization.
      *
      * @return a map where the key is the gender and the value is the number of employees of that gender
      */
     public static Map<String, Long> countEmployeesByGender(List<Employee> employees) {
         return employees.stream()
-                .collect(groupingBy(Employee::gender, counting()));
+                .collect(groupingBy(Employee::gender,
+                        counting()));
+    }
+
+    /**
+     * Finds the average salary of employees grouped by gender.
+     *
+     * @return a map where the key is the gender and the value is the average salary of that gender
+     */
+    public static Map<String, Double> averageSalaryByGender(List<Employee> employees) {
+        return employees.stream()
+                .collect(groupingBy(Employee::gender,
+                        averagingDouble(Employee::salary)));
+    }
+
+    /**
+     * Calculates the average age of employees in each department.
+     *
+     * @return a map where the key is the department name and the value is the average age in that department
+     */
+    public static Map<String, Double> averageAgeInDepartments(List<Employee> employees) {
+        return employees.stream()
+                .collect(groupingBy(Employee::department,
+                        averagingDouble(Employee::age)));
     }
 
     /**
@@ -257,7 +262,8 @@ public class KTStreams {
      */
     public static Map<String, Double> sumSalariesByDepartment(List<Employee> employees) {
         return employees.stream()
-                .collect(groupingBy(Employee::department, summingDouble(Employee::salary)));
+                .collect(groupingBy(Employee::department,
+                        summingDouble(Employee::salary)));
     }
 
     /**

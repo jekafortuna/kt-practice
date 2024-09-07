@@ -97,6 +97,13 @@ public class KTStreamsTest {
 
     @Test
     @Order(1)
+    void testAllPaymentsApproved() {
+        boolean result = allPaymentsApproved(payments);
+        assertFalse(result);
+    }
+
+    @Test
+    @Order(2)
     public void testFilterPaymentsByStatus() {
         List<Payment> approvedPayments = filterPaymentsByStatus(payments);
         assertEquals(4, approvedPayments.size());
@@ -104,7 +111,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     void testTotalAmountByCurrency() {
         BigDecimal result = totalAmountByCurrency(payments);
         assertEquals(new BigDecimal("401.25"), result);
@@ -112,7 +119,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void testFindDistinctCustomers() {
         Set<String> result = findDistinctCustomers(payments, 9);
         assertEquals(3, result.size());
@@ -121,15 +128,6 @@ public class KTStreamsTest {
         assertTrue(result.contains("John Doe"));
         assertTrue(result.contains("Bob Smith"));
         assertFalse(result.contains("David Clark"));
-    }
-
-    @Test
-    @Order(4)
-    void testCountByPaymentMethod() {
-        Map<String, Long> result = countByPaymentMethod(payments);
-        assertEquals(4L, (long) result.get("Credit Card"));
-        assertEquals(3L, (long) result.get("Bank Transfer"));
-        assertNotEquals(5L, (long) result.get("Bank Transfer"));
     }
 
     @Test
@@ -143,22 +141,6 @@ public class KTStreamsTest {
 
     @Test
     @Order(6)
-    void testGroupByCustomer() {
-        Map<Payment.PaymentStatus, String> result = groupByCustomer(payments);
-        assertEquals("Mary Jane, Mary Jane, Linda White", result.get(Payment.PaymentStatus.PENDING));
-        assertEquals("Emily Davis", result.get(Payment.PaymentStatus.FAILED));
-        assertEquals("Bob Smith, Michael Brown", result.get(Payment.PaymentStatus.REJECTED));
-    }
-
-    @Test
-    @Order(7)
-    void testAllPaymentsApproved() {
-        boolean result = allPaymentsApproved(payments);
-        assertFalse(result);
-    }
-
-    @Test
-    @Order(8)
     void testFindMaxPaymentAmount() {
         BigDecimal result = findMaxPaymentAmount(payments);
         assertEquals(new BigDecimal("200.75"), result);
@@ -166,7 +148,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(9)
+    @Order(7)
     void testGetReferencesForCustomer() {
         List<String> resultForTwo = getReferencesForCustomer(payments, "Mary Jane");
         List<String> resultForOne = getReferencesForCustomer(payments, "Michael Brown");
@@ -180,7 +162,16 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(10)
+    @Order(8)
+    void testCountByPaymentMethod() {
+        Map<String, Long> result = countByPaymentMethod(payments);
+        assertEquals(4L, (long) result.get("Credit Card"));
+        assertEquals(3L, (long) result.get("Bank Transfer"));
+        assertNotEquals(5L, (long) result.get("Bank Transfer"));
+    }
+
+    @Test
+    @Order(9)
     void testPartitionByAmount() {
         Map<Boolean, List<Payment>> result = partitionByAmount(payments, new BigDecimal("100.00"));
         assertEquals(5, result.get(true).size());
@@ -189,7 +180,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(11)
+    @Order(10)
     void testGroupByCurrencyAndMapToCustomerNames() {
         Map<Payment.Currency, List<String>> result = groupByCurrencyAndMapToCustomerNames(payments);
 
@@ -201,7 +192,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(12)
+    @Order(11)
     void testGroupByStatusAndMapToPaymentMethods() {
         Map<Payment.PaymentStatus, Set<String>> result = groupByStatusAndMapToPaymentMethods(payments);
 
@@ -211,16 +202,7 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(13)
-    void testGroupByCustomerAndMapToTotalAmount() {
-        Map<String, BigDecimal> result = groupByCustomerAndMapToTotalAmount(payments);
-
-        assertEquals(new BigDecimal("150.50"), result.get("John Doe"));
-        assertEquals(new BigDecimal("275.75"), result.get("Mary Jane"));
-    }
-
-    @Test
-    @Order(14)
+    @Order(12)
     void testGroupByDateAndMapToReferences() {
         Map<LocalDate, List<String>> result = groupByDateAndMapToReferences(payments);
 
@@ -230,7 +212,41 @@ public class KTStreamsTest {
     }
 
     @Test
+    @Order(13)
+    void testGroupByCustomer() {
+        Map<Payment.PaymentStatus, String> result = groupByCustomer(payments);
+        assertEquals("Mary Jane, Mary Jane, Linda White", result.get(Payment.PaymentStatus.PENDING));
+        assertEquals("Emily Davis", result.get(Payment.PaymentStatus.FAILED));
+        assertEquals("Bob Smith, Michael Brown", result.get(Payment.PaymentStatus.REJECTED));
+    }
+
+    @Test
+    @Order(14)
+    void testGroupByCustomerAndMapToTotalAmount() {
+        Map<String, BigDecimal> result = groupByCustomerAndMapToTotalAmount(payments);
+
+        assertEquals(new BigDecimal("150.50"), result.get("John Doe"));
+        assertEquals(new BigDecimal("275.75"), result.get("Mary Jane"));
+    }
+
+    @Test
     @Order(15)
+    public void testGetHighestPaidEmployee() {
+        Employee result = getHighestPaidEmployee(employees);
+        assertEquals("Kate", result.name());
+        assertEquals(5000, result.salary(), 0);
+    }
+
+    @Test
+    @Order(16)
+    public void testGetMostExperiencedEmployee() {
+        Employee result = getMostExperiencedEmployee(employees);
+        assertEquals("Mary", result.name());
+        assertEquals(2010, result.yearOfJoining());
+    }
+
+    @Test
+    @Order(17)
     public void testCountEmployeesInDepartments() {
         Map<String, Long> result = countEmployeesInDepartments(employees);
         assertEquals(Long.valueOf(3), result.get("First Department"));
@@ -239,7 +255,15 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(16)
+    @Order(18)
+    public void testCountEmployeesByGender() {
+        Map<String, Long> result = countEmployeesByGender(employees);
+        assertEquals(Long.valueOf(6), result.get("Male"));
+        assertEquals(Long.valueOf(4), result.get("Female"));
+    }
+
+    @Test
+    @Order(19)
     public void testAverageSalaryByGender() {
         Map<String, Double> result = averageSalaryByGender(employees);
         assertEquals(2270.0, result.get("Male"), 0.1);
@@ -248,37 +272,13 @@ public class KTStreamsTest {
     }
 
     @Test
-    @Order(17)
-    public void testGetHighestPaidEmployee() {
-        Employee result = getHighestPaidEmployee(employees);
-        assertEquals("Kate", result.name());
-        assertEquals(5000, result.salary(), 0);
-    }
-
-    @Test
-    @Order(18)
+    @Order(20)
     public void testAverageAgeInDepartments() {
         Map<String, Double> result = averageAgeInDepartments(employees);
         assertEquals(22.33, result.get("First Department"), 0.1);
         assertEquals(19.5, result.get("Second Department"), 0.1);
         assertEquals(35.3, result.get("Fifth Department"), 0.1);
         assertNotEquals(135.3, result.get("Fifth Department"), 0.1);
-    }
-
-    @Test
-    @Order(19)
-    public void testGetMostExperiencedEmployee() {
-        Employee result = getMostExperiencedEmployee(employees);
-        assertEquals("Mary", result.name());
-        assertEquals(2010, result.yearOfJoining());
-    }
-
-    @Test
-    @Order(20)
-    public void testCountEmployeesByGender() {
-        Map<String, Long> result = countEmployeesByGender(employees);
-        assertEquals(Long.valueOf(6), result.get("Male"));
-        assertEquals(Long.valueOf(4), result.get("Female"));
     }
 
     @Test
