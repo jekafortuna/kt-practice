@@ -13,6 +13,15 @@ import java.util.Set;
 public class KTStreams {
 
     /**
+     * Checks if all payments in the list are approved.
+     *
+     * @return True if all payments are approved, false otherwise.
+     */
+    public static boolean allPaymentsApproved(List<Payment> payments) {
+        throw new ExerciseNotCompletedException();
+    }
+
+    /**
      * Filters payments which were approved.
      *
      * @return A list of payments with the approved status.
@@ -40,38 +49,11 @@ public class KTStreams {
     }
 
     /**
-     * Counts the number of payments for each payment method.
-     *
-     * @return A map with payment methods as keys and their respective counts as values.
-     */
-    public static Map<String, Long> countByPaymentMethod(List<Payment> payments) {
-        throw new ExerciseNotCompletedException();
-    }
-
-    /**
      * Finds the earliest payment date in the list.
      *
      * @return The earliest payment date. Otherwise - return null
      */
     public static LocalDate findEarliestPaymentDate(List<Payment> payments) {
-        throw new ExerciseNotCompletedException();
-    }
-
-    /**
-     * Groups customer names by payment statuses
-     *
-     * @return a map where a key is a payment status and value is comma-separated customer names
-     */
-    public static Map<Payment.PaymentStatus, String> groupByCustomer(List<Payment> payments) {
-        throw new ExerciseNotCompletedException();
-    }
-
-    /**
-     * Checks if all payments in the list are approved.
-     *
-     * @return True if all payments are approved, false otherwise.
-     */
-    public static boolean allPaymentsApproved(List<Payment> payments) {
         throw new ExerciseNotCompletedException();
     }
 
@@ -91,6 +73,15 @@ public class KTStreams {
      * @return A list of payment references for the customer.
      */
     public static List<String> getReferencesForCustomer(List<Payment> payments, String customerName) {
+        throw new ExerciseNotCompletedException();
+    }
+
+    /**
+     * Counts the number of payments for each payment method.
+     *
+     * @return A map with payment methods as keys and their respective counts as values.
+     */
+    public static Map<String, Long> countByPaymentMethod(List<Payment> payments) {
         throw new ExerciseNotCompletedException();
     }
 
@@ -123,15 +114,6 @@ public class KTStreams {
     }
 
     /**
-     * Groups the payments by customer name and maps them to the total payment amount per customer.
-     *
-     * @return a map where the key is the customer name and the value is the total amount they paid
-     */
-    public static Map<String, BigDecimal> groupByCustomerAndMapToTotalAmount(List<Payment> payments) {
-        throw new ExerciseNotCompletedException();
-    }
-
-    /**
      * Groups the payments by date and maps them to a list of references.
      *
      * @return a map where the key is the date and the value is a list of references of payments made on that date
@@ -141,20 +123,20 @@ public class KTStreams {
     }
 
     /**
-     * Counts the number of employees in each department.
+     * Groups customer names by payment statuses
      *
-     * @return a map where the key is the department name and the value is the number of employees in that department
+     * @return a map where a key is a payment status and value is comma-separated customer names
      */
-    public static Map<String, Long> countEmployeesInDepartments(List<Employee> employees) {
+    public static Map<Payment.PaymentStatus, String> groupByCustomer(List<Payment> payments) {
         throw new ExerciseNotCompletedException();
     }
 
     /**
-     * Finds the average salary of employees grouped by gender.
+     * Groups the payments by customer name and maps them to the total payment amount per customer.
      *
-     * @return a map where the key is the gender and the value is the average salary of that gender
+     * @return a map where the key is the customer name and the value is the total amount they paid
      */
-    public static Map<String, Double> averageSalaryByGender(List<Employee> employees) {
+    public static Map<String, BigDecimal> groupByCustomerAndMapToTotalAmount(List<Payment> payments) {
         throw new ExerciseNotCompletedException();
     }
 
@@ -168,15 +150,6 @@ public class KTStreams {
     }
 
     /**
-     * Calculates the average age of employees in each department.
-     *
-     * @return a map where the key is the department name and the value is the average age in that department
-     */
-    public static Map<String, Double> averageAgeInDepartments(List<Employee> employees) {
-        throw new ExerciseNotCompletedException();
-    }
-
-    /**
      * Finds the employee who has spent the most years in the organization.
      *
      * @return the employee with the earliest year of joining
@@ -186,11 +159,38 @@ public class KTStreams {
     }
 
     /**
+     * Counts the number of employees in each department.
+     *
+     * @return a map where the key is the department name and the value is the number of employees in that department
+     */
+    public static Map<String, Long> countEmployeesInDepartments(List<Employee> employees) {
+        throw new ExerciseNotCompletedException();
+    }
+
+    /**
      * Counts the number of male and female employees in the organization.
      *
      * @return a map where the key is the gender and the value is the number of employees of that gender
      */
     public static Map<String, Long> countEmployeesByGender(List<Employee> employees) {
+        throw new ExerciseNotCompletedException();
+    }
+
+    /**
+     * Finds the average salary of employees grouped by gender.
+     *
+     * @return a map where the key is the gender and the value is the average salary of that gender
+     */
+    public static Map<String, Double> averageSalaryByGender(List<Employee> employees) {
+        throw new ExerciseNotCompletedException();
+    }
+
+    /**
+     * Calculates the average age of employees in each department.
+     *
+     * @return a map where the key is the department name and the value is the average age in that department
+     */
+    public static Map<String, Double> averageAgeInDepartments(List<Employee> employees) {
         throw new ExerciseNotCompletedException();
     }
 
