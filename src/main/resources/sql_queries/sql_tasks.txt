@@ -1,0 +1,250 @@
+/*
+Write a SQL statement to retrieve all customer IDs (cust_id) from the Customers table.
+*/
+select cust_id from customers;
+
+/*
+The OrderItems table contains every item ordered (and some were ordered multiple times).
+Write a SQL statement to retrieve a unique list of the products (prod_id) ordered.
+Here’s a hint: you should end up with seven unique rows displayed.
+*/
+select distinct prod_id from orderitems;
+
+/*
+Write a SQL statement that retrieves all columns from the Customers table.
+And an alternate SELECT that retrieves just the customer ID.
+*/
+select * from customers;
+select cust_id from customers;
+
+/*
+Write a SQL statement to retrieve all customer names (cust_names) from the Customers table,
+and display the results sorted from Z to A.
+*/
+select cust_name
+from customers
+order by cust_name desc;
+
+/*
+Write a SQL statement to retrieve customer ID (cust_id) and order number (order_num) from the Orders table,
+and sort the results first by customer ID and then by order date in reverse chronological order.
+*/
+select cust_id, order_num
+from orders
+order by cust_id, order_date desc;
+
+/*
+Our fictitious store obviously prefers to sell more expensive items, and lots of them.
+Write a SQL statement to display the quantity and price (item_price) from the OrderItems table,
+sorted with the highest quantity and highest price first.
+*/
+select quantity, item_price
+from orderitems
+order by quantity desc, item_price desc;
+
+/*
+Write a SQL statement to retrieve the product ID (prod_id) and name (prod_name) from the Products table,
+returning only products with a price of 9.49.
+*/
+select prod_id, prod_name
+from products
+where prod_price = 9.49;
+
+/*
+Write a SQL statement to retrieve the product ID (prod_id) and name (prod_name) from the Products table,
+returning only products with a price of 9 or more.
+*/
+select prod_id, prod_name
+from products
+where prod_price >= 9;
+
+/*
+Write a SQL statement that retrieves the unique list of order numbers (order_num) from the OrderItems table,
+which contain 100 or more of any item.
+*/
+select distinct order_num
+from orderitems
+where quantity >= 100;
+
+/*
+Write a SQL statement that returns the product name (prod_name) and price (prod_price) from Products
+for all products priced between 3 and 6 and sort the results by price.
+*/
+select prod_name, prod_price
+from products
+where prod_price between 3 and 6
+order by prod_price;
+
+/*
+Write a SQL statement to retrieve the vendor name (vend_name) from the Vendors table,
+returning only vendors in California (this requires filtering by both country [USA] and state [CA];
+after all, there could be a California outside of the USA).
+Here’s a hint: the filter requires matching strings.
+*/
+select vend_name from vendors
+where vend_country = 'USA' and vend_state = 'CA';
+
+
+/*
+Write a SQL statement to find all orders where at least 100 of items BR01, BR02, or BR03 were ordered.
+You’ll want to return order number (order_num), product ID (prod_id), and quantity for the OrderItems table,
+filtering by both the product ID and quantity.
+Here’s a hint: depending on how you write your filter, you may need to pay special attention to order of evaluation.
+*/
+select order_num, prod_id, quantity
+from orderitems
+where quantity >= 100 and (prod_id in ('BR01', 'BR02', 'BR03'))
+order by prod_id, quantity;
+
+/*
+Write a SQL statement that returns the product name (prod_name) and price (prod_price) from Products
+for all products priced between 3 and 6. Use an AND, and sort the results by price.
+*/
+select prod_name, prod_price
+from products
+where prod_price between 3 and 6
+order by prod_price;
+
+/*
+Write a SQL statement that retrieves vend_id, vend_name, vend_address, and vend_city from Vendors,
+renaming vend_name to vname, vend_city to vcity, and vend_address to vaddress.
+Sort the results by vendor name (you can use the original name or the renamed name).
+*/
+select vend_id, vend_name as vname, vend_address as vaddress, vend_city as vcity
+from vendors
+order by vname;
+
+/*
+Write a SQL statement to determine the total number of items sold (using the quantity column in OrderItems).
+*/
+select sum(quantity) from orderitems;
+
+/*
+Modify the statement you just created to determine the total number of product item (prod_item) BR01 sold.
+*/
+select sum(quantity)
+from orderitems
+where prod_id = 'BR01';
+
+/*
+Write a SQL statement to determine the price (prod_price) of the most expensive item in the Products table
+that costs no more than 10. Name the calculated field max_price.
+*/
+select max(prod_price) as max_price
+from products
+where prod_price <= 10;
+
+/*
+The OrderItems table contains the individual items for each order.
+Write a SQL statement that returns the number of lines (as order_lines) for each order number (order_num)
+and sort the results by order_lines.
+*/
+select order_num, count(*) as order_lines
+from orderitems
+group by order_num
+order by order_lines;
+
+/*
+Write a SQL statement that returns a field named cheapest_item, which contains the lowest-cost item for each vendor
+(using prod_price in the Products table), and sort the results from lowest to highest cost.
+*/
+select vend_id, min(prod_price) as cheapest_item
+from products
+group by vend_id
+order by cheapest_item;
+
+/*
+It’s important to identify the best customers. Write a SQL statement to return the order number
+(order_num in the OrderItems table) for all orders of at least 100 items.
+*/
+select order_num, sum(quantity) from orderitems
+where quantity >= 100
+group by order_num;
+
+/*
+Write a SQL statement to return the order number (order_num in the OrderItems table) for all orders
+with a total price of at least 1000.
+Hint: for this one you’ll need to calculate and sum the total (item_price multiplied by quantity).
+Sort the results by order number.
+*/
+select order_num, sum(item_price * quantity) as price
+from orderitems
+group by order_num
+having sum(item_price * quantity) >= 1000
+order by order_num;
+
+/*
+Write a SQL statement to return customer name (cust_name) from the Customers table
+and related order numbers (order_num) from the Orders table, sorting the result by customer name and then by order number.
+Actually, try this one using an INNER JOIN.
+*/
+select c.cust_name, o.order_num
+from customers c
+inner join Orders O on c.cust_id = O.cust_id
+order by cust_name, order_num;
+
+/*
+In addition to returning the customer name and order number, add a third column named OrderTotal containing the total price of each order.
+There are two ways to do this: you can create the OrderTotal column using a subquery on the OrderItems table,
+or you can join the OrderItems table to the existing tables and use an aggregate function.
+Here’s a hint: watch out for where you need to use fully qualified column names.
+*/
+select c.cust_name, o.order_num, sum(OI.quantity * OI.item_price) as order_total
+from Customers C
+         inner join Orders O on C.cust_id = O.cust_id
+         inner join OrderItems OI on O.order_num = OI.order_num
+group by o.order_num, cust_name
+order by cust_name, order_num;
+
+/*
+ Using sub-queries try to retrieve the customer ID, name, and contact information for customers
+ who have placed an order that includes the product with the ID 'RGAN01'.
+ The innermost subquery returned a list of order numbers
+ that were then used as the WHERE clause for the subquery above it.
+ That subquery returned a list of customer IDs that were used as the WHERE clause
+ for the top-level query. The top-level query actually returned the desired data.
+ */
+select cust_id, cust_name, cust_contact from customers
+    where cust_id in
+        (select cust_id from orders where order_num in
+                (select order_num from orderitems where prod_id = 'RGAN01'))
+order by cust_id;
+
+/*
+ Using a subquery, return a list of customers who bought items priced 10 or more.
+ You’ll want to use the OrderItems table to find the matching order numbers (order_num)
+ and then the Orders table to retrieve the customer ID (cust_id) for those matched orders.
+ */
+select cust_id from orders where order_num in (
+    select order_num from orderitems where item_price >= 10);
+
+/*
+ You need to know the dates when product BR01 was ordered. Write a SQL statement that uses a subquery
+ to determine which orders (in OrderItems) purchased items with a prod_id of BR01
+ and then returns customer ID (cust_id) and order date (order_date) for each from the Orders table.
+ Sort the results by order date.
+ */
+select cust_id, order_date from orders where order_num in (
+    select order_num from orderitems where prod_id = 'BR01')
+order by order_date;
+
+/*
+ Now let’s make it a bit more challenging. Update the previous challenge to return the customer email
+ (cust_email in the Customers table) for any customers who purchased items with a prod_id of BR01.
+ Hint: this involves the SELECT statement, the innermost one returning order_num from OrderItems,
+ and the middle one returning cust_id from Customers.
+ */
+select cust_email from customers where cust_id in (
+    select cust_id from orders where order_num in (
+        select order_num from orderitems where prod_id = 'BR01')
+    order by order_date);
+
+/*
+ Write a SQL statement that retrieves all product names (prod_name) from the Products table,
+ along with a calculated column named quant_sold containing the total number of this item sold
+ (retrieved using a subquery and a SUM(quantity) on the OrderItems table).
+ */
+select prod_name, (select sum(oi.quantity)
+from orderitems oi
+where oi.prod_id = p.prod_id) as quant_sold
+from products p order by quant_sold desc;
